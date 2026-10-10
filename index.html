@@ -9,18 +9,18 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
         }
 
         body {
             background-color: #0d1117;
             color: #c9d1d9;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
 
-        /* Navbar */
+        /* Navbar Estilo GitHub com Logo de Cão em SVG */
         header {
             background-color: #161b22;
             padding: 1rem 2rem;
@@ -28,99 +28,193 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #30363d;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        /* Logótipo em vetor (Cão estilizado) */
+        .dog-logo {
+            width: 36px;
+            height: 36px;
+            fill: #f0f6fc;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            padding: 6px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(35, 134, 54, 0.4);
         }
 
         header h1 {
+            color: #f0f6fc;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: #8b949e;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
             color: #58a6ff;
-            font-size: 1.5rem;
         }
 
         /* Conteúdo Principal */
         main {
-            max-width: 800px;
-            margin: 3rem auto;
-            padding: 0 1rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
             width: 100%;
+            max-width: 480px;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-text h2 {
+            font-size: 1.8rem;
+            color: #f0f6fc;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+        }
+
+        .hero-text p {
+            color: #8b949e;
+            font-size: 0.95rem;
         }
 
         .card {
             background-color: #161b22;
             border: 1px solid #30363d;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .card h2 {
-            margin-bottom: 1rem;
-            color: #f0f6fc;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         .input-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.25rem;
         }
 
         label {
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: #8b949e;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #c9d1d9;
         }
 
         input {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.8rem 1rem;
             background-color: #0d1117;
             border: 1px solid #30363d;
             border-radius: 6px;
             color: #f0f6fc;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input:focus {
             outline: none;
             border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
         }
 
         button {
+            width: 100%;
             background-color: #238636;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem;
             border-radius: 6px;
-            font-size: 1rem;
-            font-weight: bold;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            width: 100%;
+            transition: background-color 0.2s;
+            margin-top: 0.5rem;
         }
 
         button:hover {
             background-color: #2ea043;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #484f58;
+            font-size: 0.85rem;
+            border-top: 1px solid #21262d;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>SheminalGit</h1>
+        <a href="#" class="brand">
+            <!-- Logótipo Vetorial de Cão em HTML (SVG Puro) -->
+            <div class="dog-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C9 2 7 4 7 6V7C5 7 3 9 3 11V15C3 18 5 20 8 20H9V22H11V20H13V22H15V20H16C19 20 21 18 21 15V11C21 9 19 7 17 7V6C17 4 15 2 12 2M7 9H9V12H7V9M17 9H15V12H17V9Z"/>
+                </svg>
+            </div>
+            <h1>SheminalGit</h1>
+        </a>
+        <div class="nav-links">
+            <a href="#">Explore</a>
+            <a href="#">Documentação</a>
+            <a href="#">Entrar</a>
+        </div>
     </header>
 
     <main>
-        <div class="card">
-            <h2>🚀 Criar Novo Projeto</h2>
-            <form id="project-form">
-                <div class="input-group">
-                    <label for="username">Teu Nome de Utilizador (SheminalGit):</label>
-                    <input type="text" id="username" placeholder="ex: dev_mestre" required>
-                </div>
-                <div class="input-group">
-                    <label for="project-name">Nome do Projeto / Site:</label>
-                    <input type="text" id="project-name" placeholder="ex: meu-primeiro-jogo" required>
-                </div>
-                <button type="submit">Publicar Projeto</button>
-            </form>
+        <div class="container">
+            <div class="hero-text">
+                <h2>Bem-vindo ao SheminalGit</h2>
+                <p>Hospeda e publica os teus projetos de forma autónoma.</p>
+            </div>
+
+            <div class="card">
+                <form id="project-form">
+                    <div class="input-group">
+                        <label for="username">Nome de Utilizador</label>
+                        <input type="text" id="username" placeholder="ex: dev_mestre" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="project-name">Nome do Repositório / Site</label>
+                        <input type="text" id="project-name" placeholder="ex: meu-site-fixe" required>
+                    </div>
+                    <button type="submit">Criar e Publicar Projeto</button>
+                </form>
+            </div>
         </div>
     </main>
+
+    <footer>
+        &copy; 2026 SheminalGit. Todos os direitos reservados.
+    </footer>
 
 </body>
 </html>
