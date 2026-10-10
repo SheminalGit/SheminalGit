@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheminalGit - Hospedagem e Projetos</title>
+    <title>SheminalGit - Plataforma</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
@@ -20,7 +20,6 @@
             flex-direction: column;
         }
 
-        /* Navbar Estilo GitHub */
         header {
             background-color: #161b22;
             padding: 1rem 2rem;
@@ -28,7 +27,6 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #30363d;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .brand {
@@ -38,7 +36,6 @@
             text-decoration: none;
         }
 
-        /* Imagem da Logo PNG */
         .brand-logo {
             width: 38px;
             height: 38px;
@@ -50,27 +47,14 @@
         header h1 {
             color: #f0f6fc;
             font-size: 1.3rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
         }
 
-        .nav-links {
+        .user-nav {
             display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
+            align-items: center;
+            gap: 15px;
         }
 
-        .nav-links a {
-            color: #8b949e;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: #58a6ff;
-        }
-
-        /* Conteúdo Principal */
         main {
             flex: 1;
             display: flex;
@@ -81,24 +65,7 @@
 
         .container {
             width: 100%;
-            max-width: 480px;
-        }
-
-        .hero-text {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .hero-text h2 {
-            font-size: 1.8rem;
-            color: #f0f6fc;
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-        }
-
-        .hero-text p {
-            color: #8b949e;
-            font-size: 0.95rem;
+            max-width: 500px;
         }
 
         .card {
@@ -109,6 +76,11 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
+        .card h2 {
+            color: #f0f6fc;
+            margin-bottom: 1rem;
+        }
+
         .input-group {
             margin-bottom: 1.25rem;
         }
@@ -117,7 +89,6 @@
             display: block;
             margin-bottom: 0.5rem;
             font-size: 0.85rem;
-            font-weight: 500;
             color: #c9d1d9;
         }
 
@@ -129,13 +100,11 @@
             border-radius: 6px;
             color: #f0f6fc;
             font-size: 0.95rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input:focus {
             outline: none;
             border-color: #58a6ff;
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
         }
 
         button {
@@ -148,12 +117,55 @@
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
             margin-top: 0.5rem;
         }
 
         button:hover {
             background-color: #2ea043;
+        }
+
+        .btn-secondary {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #30363d;
+        }
+
+        .repo-list {
+            margin-top: 1.5rem;
+            list-style: none;
+        }
+
+        .repo-item {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .repo-item span {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+
+        .badge-demo {
+            background-color: #388bfd15;
+            color: #58a6ff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid #388bfd30;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         footer {
@@ -169,37 +181,53 @@
 
     <header>
         <a href="#" class="brand">
-            <!-- Carrega a tua imagem PNG da pasta -->
             <img src="logo.png" alt="SheminalGit Logo" class="brand-logo">
             <h1>SheminalGit</h1>
         </a>
-        <div class="nav-links">
-            <a href="#">Explore</a>
-            <a href="#">Documentação</a>
-            <a href="#">Entrar</a>
+        <div id="user-nav" class="user-nav hidden">
+            <span id="nav-username" style="color: #f0f6fc; font-weight: bold;"></span>
+            <button onclick="logout()" class="btn-secondary" style="width: auto; padding: 0.4rem 0.8rem; margin: 0;">Sair</button>
         </div>
     </header>
 
     <main>
         <div class="container">
-            <div class="hero-text">
-                <h2>Bem-vindo ao SheminalGit</h2>
-                <p>Hospeda e publica os teus projetos de forma autónoma.</p>
-            </div>
-
-            <div class="card">
-                <form id="project-form">
+            
+            <!-- TELA 1: CADASTRAR / CRIAR CONTA -->
+            <div id="auth-card" class="card">
+                <h2>Criar Conta no SheminalGit</h2>
+                <form id="register-form" onsubmit="handleRegister(event)">
                     <div class="input-group">
-                        <label for="username">Nome de Utilizador</label>
-                        <input type="text" id="username" placeholder="ex: dev_mestre" required>
+                        <label for="reg-username">Nome de Utilizador</label>
+                        <input type="text" id="reg-username" placeholder="ex: dev_mestre" required>
                     </div>
                     <div class="input-group">
-                        <label for="project-name">Nome do Repositório / Site</label>
-                        <input type="text" id="project-name" placeholder="ex: meu-site-fixe" required>
+                        <label for="reg-email">E-mail</label>
+                        <input type="email" id="reg-email" placeholder="teu@email.com" required>
                     </div>
-                    <button type="submit">Criar e Publicar Projeto</button>
+                    <button type="submit">Criar Minha Conta</button>
                 </form>
             </div>
+
+            <!-- TELA 2: PAINEL DA CONTA (APÓS ENTRAR) -->
+            <div id="dashboard-card" class="card hidden">
+                <h2>O teu Painel (<span id="profile-name"></span>)</h2>
+                <p style="color: #8b949e; font-size: 0.9rem; margin-bottom: 1.5rem;">Cria e gere os teus repositórios.</p>
+
+                <form id="repo-form" onsubmit="handleCreateRepo(event)">
+                    <div class="input-group">
+                        <label for="repo-name">Nome do Repositório</label>
+                        <input type="text" id="repo-name" placeholder="ex: meu-primeiro-site" required>
+                    </div>
+                    <button type="submit">Criar Repositório (Simulação)</button>
+                </form>
+
+                <h3 style="margin-top: 2rem; color: #f0f6fc; font-size: 1.1rem;">Os teus Repositórios:</h3>
+                <ul id="repo-list" class="repo-list">
+                    <!-- Os repositórios aparecem aqui via JavaScript -->
+                </ul>
+            </div>
+
         </div>
     </main>
 
@@ -207,5 +235,115 @@
         &copy; 2026 SheminalGit. Todos os direitos reservados.
     </footer>
 
+    <script>
+        // Lógica de Banco de Dados local em JSON
+        function getUsersData() {
+            const data = localStorage.getItem('sheminalgit_users');
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveUsersData(data) {
+            localStorage.setItem('sheminalgit_users', JSON.stringify(data));
+        }
+
+        function getCurrentUser() {
+            return localStorage.getItem('sheminalgit_current_user');
+        }
+
+        // 1. Cadastrar Conta
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+
+            let users = getUsersData();
+
+            if (!users[username]) {
+                users[username] = {
+                    email: email,
+                    repos: []
+                };
+                saveUsersData(users);
+            }
+
+            // Define utilizador atual e entra na conta
+            localStorage.setItem('sheminalgit_current_user', username);
+            showDashboard();
+        }
+
+        // 2. Criar Repositório (Falso / Simulação)
+        function handleCreateRepo(e) {
+            e.preventDefault();
+            const repoName = document.getElementById('repo-name').value.trim();
+            const currentUser = getCurrentUser();
+
+            if (!currentUser) return;
+
+            let users = getUsersData();
+            if (users[currentUser]) {
+                users[currentUser].repos.push({
+                    name: repoName,
+                    date: new Date().toLocaleDateString('pt-PT')
+                });
+                saveUsersData(users);
+                document.getElementById('repo-name').value = '';
+                renderRepos();
+            }
+        }
+
+        // Renderizar Lista de Repositórios
+        function renderRepos() {
+            const currentUser = getCurrentUser();
+            const users = getUsersData();
+            const listElement = document.getElementById('repo-list');
+            listElement.innerHTML = '';
+
+            if (users[currentUser] && users[currentUser].repos.length > 0) {
+                users[currentUser].repos.forEach(repo => {
+                    const li = document.createElement('li');
+                    li.className = 'repo-item';
+                    li.innerHTML = `
+                        <div>
+                            <span>${currentUser}/${repo.name}</span>
+                            <br><small style="color: #8b949e;">Criado em ${repo.date}</small>
+                        </div>
+                        <span class="badge-demo">Simulado</span>
+                    `;
+                    listElement.appendChild(li);
+                });
+            } else {
+                listElement.innerHTML = '<li style="color: #8b949e; font-size: 0.9rem;">Nenhum repositório criado ainda.</li>';
+            }
+        }
+
+        // Alternar Telas
+        function showDashboard() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+
+            document.getElementById('auth-card').classList.add('hidden');
+            document.getElementById('dashboard-card').classList.remove('hidden');
+            document.getElementById('user-nav').classList.remove('hidden');
+            
+            document.getElementById('nav-username').innerText = currentUser;
+            document.getElementById('profile-name').innerText = currentUser;
+
+            renderRepos();
+        }
+
+        function logout() {
+            localStorage.removeItem('sheminalgit_current_user');
+            document.getElementById('auth-card').classList.remove('hidden');
+            document.getElementById('dashboard-card').classList.add('hidden');
+            document.getElementById('user-nav').classList.add('hidden');
+        }
+
+        // Verificar sessão ao carregar a página
+        window.onload = function() {
+            if (getCurrentUser()) {
+                showDashboard();
+            }
+        };
+    </script>
 </body>
 </html>
