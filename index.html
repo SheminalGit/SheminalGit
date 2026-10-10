@@ -20,7 +20,7 @@
             flex-direction: column;
         }
 
-        /* Navbar Estilo GitHub com Logo de Cão em SVG */
+        /* Navbar Estilo GitHub */
         header {
             background-color: #161b22;
             padding: 1rem 2rem;
@@ -38,18 +38,13 @@
             text-decoration: none;
         }
 
-        /* Logótipo em vetor (Cão estilizado) */
-        .dog-logo {
-            width: 36px;
-            height: 36px;
-            fill: #f0f6fc;
-            background: linear-gradient(135deg, #238636, #2ea043);
-            padding: 6px;
+        /* Imagem da Logo PNG */
+        .brand-logo {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 10px rgba(35, 134, 54, 0.4);
+            object-fit: cover;
+            border: 1px solid #30363d;
         }
 
         header h1 {
@@ -174,12 +169,8 @@
 
     <header>
         <a href="#" class="brand">
-            <!-- Logótipo Vetorial de Cão em HTML (SVG Puro) -->
-            <div class="dog-logo">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2C9 2 7 4 7 6V7C5 7 3 9 3 11V15C3 18 5 20 8 20H9V22H11V20H13V22H15V20H16C19 20 21 18 21 15V11C21 9 19 7 17 7V6C17 4 15 2 12 2M7 9H9V12H7V9M17 9H15V12H17V9Z"/>
-                </svg>
-            </div>
+            <!-- Carrega a tua imagem PNG da pasta -->
+            <img src="logo.png" alt="SheminalGit Logo" class="brand-logo">
             <h1>SheminalGit</h1>
         </a>
         <div class="nav-links">
