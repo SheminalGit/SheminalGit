@@ -76,9 +76,29 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
-        .card h2 {
+        /* Abas de Navegação no Login/Registo */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #8b949e;
+            padding: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 2px solid transparent;
+            margin-top: 0;
+        }
+
+        .tab-btn.active {
             color: #f0f6fc;
-            margin-bottom: 1rem;
+            border-bottom-color: #f78166;
         }
 
         .input-group {
@@ -193,13 +213,18 @@
     <main>
         <div class="container">
             
-            <!-- TELA 1: CADASTRAR / CRIAR CONTA -->
+            <!-- TELA DE AUTENTICAÇÃO (CADASTRO / LOGIN) -->
             <div id="auth-card" class="card">
-                <h2>Criar Conta no SheminalGit</h2>
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('register')">Criar Conta</button>
+                    <button class="tab-btn" onclick="switchTab('login')">Entrar na Conta</button>
+                </div>
+
+                <!-- FORMULÁRIO DE CRIAR CONTA -->
                 <form id="register-form" onsubmit="handleRegister(event)">
                     <div class="input-group">
                         <label for="reg-username">Nome de Utilizador</label>
-                        <input type="text" id="reg-username" placeholder="ex: dev_mestre" required>
+                        <input type="text" id="reg-username" placeholder="ex: dev-logic" required>
                     </div>
                     <div class="input-group">
                         <label for="reg-email">E-mail</label>
@@ -207,12 +232,21 @@
                     </div>
                     <button type="submit">Criar Minha Conta</button>
                 </form>
+
+                <!-- FORMULÁRIO DE ENTRAR -->
+                <form id="login-form" class="hidden" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <label for="login-username">Nome de Utilizador</label>
+                        <input type="text" id="login-username" placeholder="ex: dev-logic" required>
+                    </div>
+                    <button type="submit">Entrar</button>
+                </form>
             </div>
 
-            <!-- TELA 2: PAINEL DA CONTA (APÓS ENTRAR) -->
+            <!-- TELA 2: PAINEL DA CONTA (URL: #your-account) -->
             <div id="dashboard-card" class="card hidden">
-                <h2>O teu Painel (<span id="profile-name"></span>)</h2>
-                <p style="color: #8b949e; font-size: 0.9rem; margin-bottom: 1.5rem;">Cria e gere os teus repositórios.</p>
+                <h2 style="color: #f0f6fc;">Painel Pessoal (<span id="profile-name"></span>)</h2>
+                <p style="color: #8b949e; font-size: 0.9rem; margin-bottom: 1.5rem;">Acedeste a: <code>your-account</code></p>
 
                 <form id="repo-form" onsubmit="handleCreateRepo(event)">
                     <div class="input-group">
@@ -223,9 +257,7 @@
                 </form>
 
                 <h3 style="margin-top: 2rem; color: #f0f6fc; font-size: 1.1rem;">Os teus Repositórios:</h3>
-                <ul id="repo-list" class="repo-list">
-                    <!-- Os repositórios aparecem aqui via JavaScript -->
-                </ul>
+                <ul id="repo-list" class="repo-list"></ul>
             </div>
 
         </div>
@@ -236,7 +268,6 @@
     </footer>
 
     <script>
-        // Lógica de Banco de Dados local em JSON
         function getUsersData() {
             const data = localStorage.getItem('sheminalgit_users');
             return data ? JSON.parse(data) : {};
@@ -250,6 +281,25 @@
             return localStorage.getItem('sheminalgit_current_user');
         }
 
+        // Alternar entre Criar Conta e Entrar
+        function switchTab(tab) {
+            const regForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            if (tab === 'register') {
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                regForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
         // 1. Cadastrar Conta
         function handleRegister(e) {
             e.preventDefault();
@@ -259,19 +309,29 @@
             let users = getUsersData();
 
             if (!users[username]) {
-                users[username] = {
-                    email: email,
-                    repos: []
-                };
+                users[username] = { email: email, repos: [] };
                 saveUsersData(users);
             }
 
-            // Define utilizador atual e entra na conta
             localStorage.setItem('sheminalgit_current_user', username);
             showDashboard();
         }
 
-        // 2. Criar Repositório (Falso / Simulação)
+        // 2. Entrar na Conta (Login)
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            let users = getUsersData();
+
+            if (users[username]) {
+                localStorage.setItem('sheminalgit_current_user', username);
+                showDashboard();
+            } else {
+                alert('Esta conta não existe! Por favor, cria primeiro a tua conta.');
+            }
+        }
+
+        // 3. Criar Repositório Falso
         function handleCreateRepo(e) {
             e.preventDefault();
             const repoName = document.getElementById('repo-name').value.trim();
@@ -291,7 +351,6 @@
             }
         }
 
-        // Renderizar Lista de Repositórios
         function renderRepos() {
             const currentUser = getCurrentUser();
             const users = getUsersData();
@@ -316,7 +375,7 @@
             }
         }
 
-        // Alternar Telas
+        // Entrar no Painel e Alterar URL para /your-account
         function showDashboard() {
             const currentUser = getCurrentUser();
             if (!currentUser) return;
@@ -328,17 +387,20 @@
             document.getElementById('nav-username').innerText = currentUser;
             document.getElementById('profile-name').innerText = currentUser;
 
+            // Altera o URL do navegador sem recarregar a página
+            window.location.hash = 'your-account';
+
             renderRepos();
         }
 
         function logout() {
             localStorage.removeItem('sheminalgit_current_user');
+            window.location.hash = '';
             document.getElementById('auth-card').classList.remove('hidden');
             document.getElementById('dashboard-card').classList.add('hidden');
             document.getElementById('user-nav').classList.add('hidden');
         }
 
-        // Verificar sessão ao carregar a página
         window.onload = function() {
             if (getCurrentUser()) {
                 showDashboard();
