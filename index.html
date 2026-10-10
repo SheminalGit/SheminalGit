@@ -76,7 +76,6 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
-        /* Abas de Navegação no Login/Registo */
         .auth-tabs {
             display: flex;
             border-bottom: 1px solid #30363d;
@@ -154,6 +153,15 @@
             background-color: #30363d;
         }
 
+        .mail-box-preview {
+            background-color: #0d1117;
+            border: 1px solid #388bfd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
         .repo-list {
             margin-top: 1.5rem;
             list-style: none;
@@ -213,37 +221,76 @@
     <main>
         <div class="container">
             
-            <!-- TELA DE AUTENTICAÇÃO (CADASTRO / LOGIN) -->
+            <!-- TELA DE AUTENTICAÇÃO -->
             <div id="auth-card" class="card">
                 <div class="auth-tabs">
                     <button class="tab-btn active" onclick="switchTab('register')">Criar Conta</button>
                     <button class="tab-btn" onclick="switchTab('login')">Entrar na Conta</button>
                 </div>
 
-                <!-- FORMULÁRIO DE CRIAR CONTA -->
+                <!-- FORMULÁRIO DE REGISTO -->
                 <form id="register-form" onsubmit="handleRegister(event)">
                     <div class="input-group">
                         <label for="reg-username">Nome de Utilizador</label>
                         <input type="text" id="reg-username" placeholder="ex: dev-logic" required>
                     </div>
                     <div class="input-group">
-                        <label for="reg-email">E-mail</label>
-                        <input type="email" id="reg-email" placeholder="teu@email.com" required>
+                        <label for="reg-email">E-mail (Gmail)</label>
+                        <input type="email" id="reg-email" placeholder="teu.email@gmail.com" required>
                     </div>
-                    <button type="submit">Criar Minha Conta</button>
+                    <div class="input-group">
+                        <label for="reg-password">Palavra-passe (Password)</label>
+                        <input type="password" id="reg-password" placeholder="••••••••" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-confirm">Confirmar Palavra-passe</label>
+                        <input type="password" id="reg-confirm" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit">Criar Minha Conta e Enviar E-mail</button>
                 </form>
 
-                <!-- FORMULÁRIO DE ENTRAR -->
+                <!-- FORMULÁRIO DE LOGIN -->
                 <form id="login-form" class="hidden" onsubmit="handleLogin(event)">
                     <div class="input-group">
                         <label for="login-username">Nome de Utilizador</label>
                         <input type="text" id="login-username" placeholder="ex: dev-logic" required>
                     </div>
+                    <div class="input-group">
+                        <label for="login-password">Palavra-passe (Password)</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
                     <button type="submit">Entrar</button>
                 </form>
             </div>
 
-            <!-- TELA 2: PAINEL DA CONTA (URL: #your-account) -->
+            <!-- TELA DE VERIFICAÇÃO DE E-MAIL -->
+            <div id="verify-card" class="card hidden">
+                <h2 style="color: #f0f6fc;">Confirma o teu E-mail ✉️</h2>
+                <p style="color: #8b949e; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    Enviámos um código de ativação de 4 dígitos para <strong id="target-email" style="color: #58a6ff;"></strong>. Vai ao teu Gmail verificar!
+                </p>
+
+                <form onsubmit="handleVerify(event)">
+                    <div class="input-group">
+                        <label for="verification-code">Código de Confirmação</label>
+                        <input type="text" id="verification-code" placeholder="ex: 4829" required maxlength="4" style="text-align: center; font-size: 1.2rem; letter-spacing: 4px;">
+                    </div>
+                    <button type="submit">Verificar e Ativar Conta</button>
+                </form>
+
+                <!-- BOTÃO DO SIMULADOR DE GMAIL -->
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <button type="button" onclick="toggleSimulatedGmail()" class="btn-secondary">Abrir Caixa do Gmail (Simulador)</button>
+                </div>
+
+                <div id="simulated-gmail-box" class="mail-box-preview hidden">
+                    <p style="color: #f0f6fc; font-weight: bold; margin-bottom: 0.4rem;">📥 Mensagem de: <code>no-reply@sheminalgit.com</code></p>
+                    <p style="color: #8b949e; margin-bottom: 0.8rem;">Olá! O teu código de ativação no SheminalGit é:</p>
+                    <div style="background-color: #161b22; padding: 10px; text-align: center; font-size: 1.4rem; color: #58a6ff; font-weight: bold; border-radius: 4px;" id="display-secret-code">----</div>
+                </div>
+            </div>
+
+            <!-- PAINEL DA CONTA (#your-account) -->
             <div id="dashboard-card" class="card hidden">
                 <h2 style="color: #f0f6fc;">Painel Pessoal (<span id="profile-name"></span>)</h2>
                 <p style="color: #8b949e; font-size: 0.9rem; margin-bottom: 1.5rem;">Acedeste a: <code>your-account</code></p>
@@ -268,6 +315,12 @@
     </footer>
 
     <script>
+        // RESET TOTAL: Limpa contas antigas para iniciar limpo
+        if (!localStorage.getItem('sheminalgit_reset_v3')) {
+            localStorage.clear();
+            localStorage.setItem('sheminalgit_reset_v3', 'true');
+        }
+
         function getUsersData() {
             const data = localStorage.getItem('sheminalgit_users');
             return data ? JSON.parse(data) : {};
@@ -281,7 +334,6 @@
             return localStorage.getItem('sheminalgit_current_user');
         }
 
-        // Alternar entre Criar Conta e Entrar
         function switchTab(tab) {
             const regForm = document.getElementById('register-form');
             const loginForm = document.getElementById('login-form');
@@ -300,38 +352,94 @@
             }
         }
 
-        // 1. Cadastrar Conta
+        // 1. Registo e geração do código de e-mail simulado
         function handleRegister(e) {
             e.preventDefault();
             const username = document.getElementById('reg-username').value.trim();
             const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
 
-            let users = getUsersData();
-
-            if (!users[username]) {
-                users[username] = { email: email, repos: [] };
-                saveUsersData(users);
+            if (password !== confirm) {
+                alert('As palavras-passe não coincidem!');
+                return;
             }
 
-            localStorage.setItem('sheminalgit_current_user', username);
-            showDashboard();
-        }
-
-        // 2. Entrar na Conta (Login)
-        function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
             let users = getUsersData();
 
             if (users[username]) {
-                localStorage.setItem('sheminalgit_current_user', username);
+                alert('Este nome de utilizador já existe!');
+                return;
+            }
+
+            // Gerar código aleatório de 4 dígitos para o e-mail
+            const secretCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+            users[username] = {
+                email: email,
+                password: password,
+                verified: false,
+                code: secretCode,
+                repos: []
+            };
+
+            saveUsersData(users);
+            localStorage.setItem('sheminalgit_pending_user', username);
+
+            // Mostrar ecrã de verificação
+            document.getElementById('auth-card').classList.add('hidden');
+            document.getElementById('verify-card').classList.remove('hidden');
+            document.getElementById('target-email').innerText = email;
+            document.getElementById('display-secret-code').innerText = secretCode;
+        }
+
+        // 2. Verificar código do E-mail
+        function handleVerify(e) {
+            e.preventDefault();
+            const userTypedCode = document.getElementById('verification-code').value.trim();
+            const pendingUser = localStorage.getItem('sheminalgit_pending_user');
+
+            let users = getUsersData();
+
+            if (users[pendingUser] && users[pendingUser].code === userTypedCode) {
+                users[pendingUser].verified = true;
+                saveUsersData(users);
+
+                localStorage.setItem('sheminalgit_current_user', pendingUser);
+                localStorage.removeItem('sheminalgit_pending_user');
+
+                document.getElementById('verify-card').classList.add('hidden');
                 showDashboard();
             } else {
-                alert('Esta conta não existe! Por favor, cria primeiro a tua conta.');
+                alert('Código de verificação incorreto! Vai ver a tua caixa de correio.');
             }
         }
 
-        // 3. Criar Repositório Falso
+        function toggleSimulatedGmail() {
+            const box = document.getElementById('simulated-gmail-box');
+            box.classList.toggle('hidden');
+        }
+
+        // 3. Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            let users = getUsersData();
+
+            if (users[username] && users[username].password === password) {
+                if (!users[username].verified) {
+                    alert('Esta conta ainda não foi verificada pelo e-mail!');
+                    return;
+                }
+                localStorage.setItem('sheminalgit_current_user', username);
+                showDashboard();
+            } else {
+                alert('Utilizador ou palavra-passe incorretos!');
+            }
+        }
+
         function handleCreateRepo(e) {
             e.preventDefault();
             const repoName = document.getElementById('repo-name').value.trim();
@@ -375,29 +483,28 @@
             }
         }
 
-        // Entrar no Painel e Alterar URL para /your-account
         function showDashboard() {
             const currentUser = getCurrentUser();
             if (!currentUser) return;
 
             document.getElementById('auth-card').classList.add('hidden');
+            document.getElementById('verify-card').classList.add('hidden');
             document.getElementById('dashboard-card').classList.remove('hidden');
             document.getElementById('user-nav').classList.remove('hidden');
             
             document.getElementById('nav-username').innerText = currentUser;
             document.getElementById('profile-name').innerText = currentUser;
 
-            // Altera o URL do navegador sem recarregar a página
             window.location.hash = 'your-account';
-
             renderRepos();
         }
 
         function logout() {
             localStorage.removeItem('sheminalgit_current_user');
             window.location.hash = '';
-            document.getElementById('auth-card').classList.remove('hidden');
             document.getElementById('dashboard-card').classList.add('hidden');
+            document.getElementById('verify-card').classList.add('hidden');
+            document.getElementById('auth-card').classList.remove('hidden');
             document.getElementById('user-nav').classList.add('hidden');
         }
 
